@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 
-namespace JaguaR
+namespace JaguaR.Components
 {
     public class JaguaRComponent : GH_Component
     {
@@ -16,9 +16,9 @@ namespace JaguaR
         /// new tabs/panels will automatically be created.
         /// </summary>
         public JaguaRComponent()
-            : base("JaguaR", "Nickname",
-                "Description",
-                "Category", "Subcategory")
+            : base("Find slow components", "Speed",
+                "Finds the slowest components in the canvas",
+                "JaguaR", "Developer")
         {
         }
 
@@ -27,6 +27,8 @@ namespace JaguaR
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
+            pManager.AddIntegerParameter("threshold", "threshold", "threshold", GH_ParamAccess.item);
+            pManager.AddBooleanParameter("refresh", "refresh", "refresh", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -34,6 +36,11 @@ namespace JaguaR
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
+
+
+            
+
+
         }
 
         /// <summary>
@@ -43,7 +50,35 @@ namespace JaguaR
         /// to store data in output parameters.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
+            int threshold = -1;
+            bool refresh = false;
+
+            DA.GetData(0, ref threshold);
+            DA.GetData(1, ref refresh);
+
+            int found = 0;
+            Message = "None found";
+
+            foreach (var obj in OnPingDocument().Objects)
+            {
+                var para = obj as Grasshopper.Kernel.GH_ActiveObject;
+                if (para != null)
+                {
+                    if (para.ProcessorTime.Milliseconds > threshold)
+                    {
+                        para.Attributes.Selected = true;
+                        found++;
+                    }
+                    else
+                    {
+                        para.Attributes.Selected = false;
+                    }
+                }
+            }
+            Message = found.ToString() + " found";
+
         }
+
 
         /// <summary>
         /// Provides an Icon for every component that will be visible in the User Interface.
@@ -67,6 +102,12 @@ namespace JaguaR
         public override Guid ComponentGuid
         {
             get { return new Guid("{2e701d39-5e2d-4979-8b66-531d0fb7b30e}"); }
+        }
+
+        public override void CreateAttributes()
+        {
+            base.CreateAttributes();
+            //m_attributes = new CustomAttributes2(this);
         }
     }
 }

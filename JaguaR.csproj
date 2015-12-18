@@ -53,10 +53,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JaguaRComponent.cs" />
+    <Compile Include="Components\JaguaRComponent.cs" />
+    <Compile Include="Interface\C_CustomAttributes.cs" />
     <Compile Include="JaguaRInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
